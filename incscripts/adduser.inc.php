@@ -3,12 +3,14 @@
 use MongoDB\Driver\BulkWrite;
 use MongoDB\BSON\ObjectId;
 use MongoDB\Driver\Exception;
+use MongoDB\Driver\Manager;
 
 require_once __DIR__.'/../vendor/autoload.php';
 
 if(isset($_POST['submit'])) {
 
     $bulk = new BulkWrite;
+    $manager = new Manager("mongodb://localhost:27017");
 
     $firstname = htmlspecialchars($_POST["firstname"]);
     $lastname = htmlspecialchars($_POST["lastname"]);
@@ -27,6 +29,7 @@ if(isset($_POST['submit'])) {
 
     try {
         $bulk->insert($user);
+        $manager->executeBulkWrite("db.collection", $bulk);
         echo "User added";
     } catch(Exception $e) {
         die("Error encountered: ".$e);
